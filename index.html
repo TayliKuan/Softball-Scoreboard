@@ -92,7 +92,7 @@
 
         .count-display {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 15px;
         }
 
@@ -119,9 +119,9 @@
             gap: 5px;
         }
 
-        .count-controls button {
-            padding: 3px 8px;
-            font-size: 12px;
+        .reset-count-button {
+            margin-top: 10px;
+            align-self: flex-start;
         }
 
         .bases-display {
@@ -330,6 +330,27 @@
                 gap: 15px;
             }
 
+            .count-display {
+                flex-direction: column;
+                width: 100%;
+                gap: 15px;
+            }
+
+            .count-section {
+                width: 100%;
+                justify-content: flex-start;
+                margin-bottom: 10px;
+            }
+
+            .count-controls {
+                margin-left: auto;
+            }
+
+            .reset-count-button {
+                width: auto;
+                align-self: flex-start;
+            }
+
             .bases-display {
                 flex-wrap: wrap;
                 justify-content: space-around;
@@ -496,8 +517,10 @@
                 <div class="out-circle" id="out1"></div>
                 <div class="out-circle" id="out2"></div>
                 <div class="out-circle" id="out3"></div>
-                <button onclick="addOut()">增加出局</button>
-                <button onclick="resetOuts()">重置出局</button>
+                <div class="count-controls">
+                    <button onclick="addOut()">+</button>
+                    <button onclick="resetOuts()">-</button>
+                </div>
             </div>
             <div class="count-display">
                 <div class="count-section">
@@ -521,7 +544,7 @@
                         <button onclick="updateCount('ball', -1)">-</button>
                     </div>
                 </div>
-                <button onclick="resetCount()">重置球數</button>
+                <button class="reset-count-button" onclick="resetCount()">重置球數</button>
             </div>
         </div>
 
@@ -548,7 +571,7 @@
                 <span>棒</span>
                 <button onclick="updateOpponentBatter(1)">下一棒</button>
                 <button onclick="updateOpponentBatter(-1)">上一棒</button>
-                <span class="small-label">人數:</span>
+                <span class="small-label"></span>
                 <select id="opponent-player-count" onchange="updateOpponentPlayerCount(this.value)">
                     <option value="10">10人</option>
                     <option value="11">11人</option>
