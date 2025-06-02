@@ -75,12 +75,25 @@
         .outs-display {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 5px;
+            width: 100%;
+        }
+
+        .outs-controls {
+            display: flex;
+            gap: 3px;
+            margin-left: auto;
+        }
+
+        .outs-controls button {
+            padding: 2px 6px;
+            font-size: 12px;
+            min-width: 24px;
         }
 
         .out-circle {
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background-color: #666;
             display: inline-block;
@@ -93,18 +106,20 @@
         .count-display {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 8px;
+            width: 100%;
         }
 
         .count-section {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 3px;
+            width: 100%;
         }
 
         .count-circle {
-            width: 15px;
-            height: 15px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background-color: #666;
             display: inline-block;
@@ -116,12 +131,32 @@
 
         .count-controls {
             display: flex;
-            gap: 5px;
+            gap: 3px;
+            margin-left: auto;
+        }
+
+        .count-controls button,
+        .outs-controls button {
+            padding: 2px 6px;
+            font-size: 12px;
+            min-width: 24px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .count-controls button:hover,
+        .outs-controls button:hover {
+            background-color: #45a049;
         }
 
         .reset-count-button {
-            margin-top: 10px;
+            margin-top: 6px;
             align-self: flex-start;
+            font-size: 12px;
+            padding: 2px 6px;
         }
 
         .bases-display {
@@ -169,11 +204,13 @@
             padding: 15px;
             border-radius: 5px;
             color: black;
+            max-width: 100%;
+            overflow-x: auto;
         }
 
         .batter-row {
             display: grid;
-            grid-template-columns: 25px 50px 150px 120px 60px;
+            grid-template-columns: 25px 50px 150px 120px 60px 150px;
             gap: 10px;
             align-items: center;
             margin-bottom: 5px;
@@ -333,16 +370,17 @@
             .count-display {
                 flex-direction: column;
                 width: 100%;
-                gap: 15px;
+                gap: 8px;
             }
 
             .count-section {
                 width: 100%;
                 justify-content: flex-start;
-                margin-bottom: 10px;
+                margin-bottom: 6px;
             }
 
-            .count-controls {
+            .count-controls,
+            .outs-controls {
                 margin-left: auto;
             }
 
@@ -357,9 +395,32 @@
             }
 
             .batter-row {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .batter-row-main {
+                display: grid;
                 grid-template-columns: 20px 45px 120px 100px 50px;
                 gap: 5px;
+                align-items: center;
+            }
+
+            .batter-row-today {
+                padding-left: 25px;
                 font-size: 14px;
+                color: #666;
+            }
+
+            .batter-row[style*="font-weight: bold"] {
+                display: grid;
+                grid-template-columns: 20px 45px 120px 100px 50px;
+                gap: 5px;
+            }
+
+            .batter-row[style*="font-weight: bold"] > div:last-child {
+                display: none;
             }
 
             .result-controls {
@@ -389,8 +450,15 @@
 
         @media (max-width: 480px) {
             .batter-row {
-                grid-template-columns: 20px 40px 100px 80px 45px;
                 font-size: 12px;
+            }
+
+            .batter-row-main {
+                grid-template-columns: 20px 40px 100px 80px 45px;
+            }
+
+            .batter-row[style*="font-weight: bold"] {
+                grid-template-columns: 20px 40px 100px 80px 45px;
             }
 
             .stats-table {
@@ -482,26 +550,48 @@
                 font-size: 14px;
             }
         }
+
+        .result-controls button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        .inning-display::after {
+            content: attr(data-status);
+            display: block;
+            font-size: 16px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .batting-order-label {
+            color: #aaa;
+            font-size: 16px;
+            margin-top: 5px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="scoreboard">
         <div class="team-score">
             <div class="team">
-                <input type="text" class="team-name" id="home-team-name" value="主隊" onchange="updateTeamName('home')">
+                <input type="text" class="team-name" id="home-team-name" onchange="updateTeamName('home')">
                 <div class="score" id="home-score">0</div>
                 <div class="score-buttons">
                     <button onclick="updateScore('home', 1)">+1</button>
                     <button onclick="updateScore('home', -1)">-1</button>
                 </div>
+                <div class="batting-order-label" id="home-batting-order"></div>
             </div>
             <div class="team">
-                <input type="text" class="team-name" id="away-team-name" value="客隊" onchange="updateTeamName('away')">
+                <input type="text" class="team-name" id="away-team-name" onchange="updateTeamName('away')">
                 <div class="score" id="away-score">0</div>
                 <div class="score-buttons">
                     <button onclick="updateScore('away', 1)">+1</button>
                     <button onclick="updateScore('away', -1)">-1</button>
                 </div>
+                <div class="batting-order-label" id="away-batting-order"></div>
             </div>
         </div>
 
@@ -516,10 +606,9 @@
                 出局數:
                 <div class="out-circle" id="out1"></div>
                 <div class="out-circle" id="out2"></div>
-                <div class="out-circle" id="out3"></div>
-                <div class="count-controls">
-                    <button onclick="addOut()">+</button>
-                    <button onclick="resetOuts()">-</button>
+                <div class="outs-controls" style="display: none;">
+                    <button onclick="handleOutsChange(1)">+</button>
+                    <button onclick="handleOutsChange(-1)">-</button>
                 </div>
             </div>
             <div class="count-display">
@@ -527,7 +616,6 @@
                     好球:
                     <div class="count-circle" id="strike1"></div>
                     <div class="count-circle" id="strike2"></div>
-                    <div class="count-circle" id="strike3"></div>
                     <div class="count-controls">
                         <button onclick="updateCount('strike', 1)">+</button>
                         <button onclick="updateCount('strike', -1)">-</button>
@@ -538,7 +626,6 @@
                     <div class="count-circle" id="ball1"></div>
                     <div class="count-circle" id="ball2"></div>
                     <div class="count-circle" id="ball3"></div>
-                    <div class="count-circle" id="ball4"></div>
                     <div class="count-controls">
                         <button onclick="updateCount('ball', 1)">+</button>
                         <button onclick="updateCount('ball', -1)">-</button>
@@ -564,21 +651,6 @@
             </div>
         </div>
 
-        <div class="opponent-info">
-            <div class="opponent-controls">
-                <span>對方打者: 第</span>
-                <span id="opponent-batter-number">1</span>
-                <span>棒</span>
-                <button onclick="updateOpponentBatter(1)">下一棒</button>
-                <button onclick="updateOpponentBatter(-1)">上一棒</button>
-                <span class="small-label"></span>
-                <select id="opponent-player-count" onchange="updateOpponentPlayerCount(this.value)">
-                    <option value="10">10人</option>
-                    <option value="11">11人</option>
-                </select>
-            </div>
-        </div>
-
         <div class="batting-order-container">
             <div class="batting-orders-row">
                 <div class="batting-order">
@@ -595,6 +667,7 @@
                         <div>選手名稱</div>
                         <div>守備位置</div>
                         <div>目前</div>
+                        <div>今日</div>
                     </div>
                     <div id="batting-order-list"></div>
                 </div>
@@ -677,10 +750,9 @@
                 third: false
             },
             currentBatter: 1,
-            opponentBatter: 1,
-            opponentPlayerCount: 10,
-            homeTeamName: "主隊",
-            awayTeamName: "客隊",
+            homeTeamName: "先攻",
+            awayTeamName: "後攻",
+            isBattingFirst: null,
             playerCount: 10,
             homeBattingOrder: Array(11).fill().map(() => ({
                 number: "",
@@ -691,7 +763,8 @@
                 hits: 0,
                 homeRuns: 0,
                 rbis: 0,
-                inningResults: Array(7).fill("")
+                inningResults: Array(7).fill(""),
+                todayResults: []
             })),
             awayBattingOrder: Array(11).fill().map(() => ({
                 name: "",
@@ -740,23 +813,33 @@
                 row.draggable = true;
                 row.dataset.index = i;
                 
+                // 生成今日打擊記錄的顯示文字
+                const todayResultsText = currentOrder[i].todayResults.length > 0 
+                    ? currentOrder[i].todayResults.join('/') 
+                    : '';
+                
                 row.innerHTML = `
-                    <div class="batter-number">${i + 1}</div>
-                    <input type="text" class="batter-number-input" 
-                           value="${currentOrder[i].number}"
-                           onchange="updateBatterInfo(${i}, 'number', this.value)"
-                           placeholder="背號">
-                    <input type="text" class="batter-name" 
-                           value="${currentOrder[i].name}"
-                           onchange="updateBatterInfo(${i}, 'name', this.value)"
-                           placeholder="${i + 1}號打者">
-                    <select onchange="updateBatterInfo(${i}, 'position', this.value)">
-                        <option value="">選擇位置</option>
-                        ${POSITIONS.map(pos => 
-                            `<option value="${pos}" ${currentOrder[i].position === pos ? 'selected' : ''}>${pos}</option>`
-                        ).join('')}
-                    </select>
-                    <div>${i + 1 === gameState.currentBatter ? '打擊中' : ''}</div>
+                    <div class="batter-row-main">
+                        <div class="batter-number">${i + 1}</div>
+                        <input type="text" class="batter-number-input" 
+                               value="${currentOrder[i].number}"
+                               onchange="updateBatterInfo(${i}, 'number', this.value)"
+                               placeholder="背號">
+                        <input type="text" class="batter-name" 
+                               value="${currentOrder[i].name}"
+                               onchange="updateBatterInfo(${i}, 'name', this.value)"
+                               placeholder="${i + 1}號打者">
+                        <select onchange="updateBatterInfo(${i}, 'position', this.value)">
+                            <option value="">選擇位置</option>
+                            ${POSITIONS.map(pos => 
+                                `<option value="${pos}" ${currentOrder[i].position === pos ? 'selected' : ''}>${pos}</option>`
+                            ).join('')}
+                        </select>
+                        <div>${i + 1 === gameState.currentBatter ? '打擊中' : ''}</div>
+                    </div>
+                    <div class="batter-row-today">
+                        ${todayResultsText ? '今日：' + todayResultsText : ''}
+                    </div>
                 `;
 
                 // 添加拖放事件監聽器
@@ -851,6 +934,8 @@
 
         function updateTeamName(team) {
             const newName = document.getElementById(team + '-team-name').value;
+            element.value = newName;
+            
             if (team === 'home') {
                 gameState.homeTeamName = newName;
             } else {
@@ -890,9 +975,14 @@
         }
 
         function updateOutsDisplay() {
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 2; i++) {
                 const outCircle = document.getElementById('out' + i);
                 outCircle.className = 'out-circle' + (i <= gameState.outs ? ' active' : '');
+            }
+            // 更新出局數控制按鈕的顯示
+            const outsControls = document.querySelector('.outs-controls');
+            if (outsControls) {
+                outsControls.style.display = gameState.isBattingFirst === gameState.isTop ? 'none' : 'flex';
             }
         }
 
@@ -909,8 +999,20 @@
             }
             document.getElementById('inning').textContent = gameState.inning;
             document.getElementById('top-bottom').textContent = gameState.isTop ? '上' : '下';
-            resetOuts();
-            gameState.currentBatter = 1;
+            
+            // 重置出局數
+            gameState.outs = 0;
+            updateOutsDisplay();
+            
+            // 重置壘包狀態
+            Object.keys(gameState.bases).forEach(base => {
+                gameState.bases[base] = false;
+                document.getElementById(base).className = 'base-status';
+            });
+            
+            // 更新記錄按鈕狀態
+            updateRecordButtonState();
+            
             initializeBattingOrder();
         }
 
@@ -920,6 +1022,28 @@
             const batterNumber = currentBatterInfo.number ? `#${currentBatterInfo.number} ` : '';
             const batterResult = document.getElementById('batter-result').value;
             const rbis = parseInt(document.getElementById('rbi-input').value) || 0;
+
+            // 添加今日打擊記錄
+            currentBatterInfo.todayResults.push(batterResult);
+
+            // 處理出局數
+            let outsToAdd = 0;
+            switch (batterResult) {
+                case '三振':
+                case '滾地出局':
+                case '飛球出局':
+                    outsToAdd = 1;
+                    break;
+                case '雙殺':
+                    outsToAdd = 2;
+                    break;
+            }
+
+            // 更新出局數
+            if (outsToAdd > 0) {
+                gameState.outs += outsToAdd;
+                updateOutsDisplay();
+            }
 
             // 更新打擊統計
             if (!['四壞保送', '故意四壞'].includes(batterResult)) {
@@ -955,8 +1079,17 @@
             // 重置打點輸入
             document.getElementById('rbi-input').value = '0';
 
+            // 更新下一棒
             gameState.currentBatter = gameState.currentBatter % gameState.playerCount + 1;
-            initializeBattingOrder();
+
+            // 檢查是否需要換局
+            if (gameState.outs >= 3) {
+                setTimeout(() => {
+                    changeInning();
+                }, 500);
+            } else {
+                initializeBattingOrder();
+            }
         }
 
         function updateStatsTable() {
@@ -1010,37 +1143,18 @@
         }
 
         function updateCount(type, change) {
-            const maxCount = type === 'strike' ? 3 : 4;
+            const maxCount = type === 'strike' ? 2 : 3;
             if (type === 'strike') {
                 gameState.strikes = Math.max(1, Math.min(maxCount, gameState.strikes + change));
                 updateCountDisplay('strike', gameState.strikes);
-                if (gameState.strikes === 3) {
-                    setTimeout(() => {
-                        if (confirm('三振出局，是否要記錄？')) {
-                            document.getElementById('batter-result').value = '三振';
-                            recordBatterResult();
-                            addOut();
-                            resetCount();
-                        }
-                    }, 100);
-                }
             } else {
                 gameState.balls = Math.max(1, Math.min(maxCount, gameState.balls + change));
                 updateCountDisplay('ball', gameState.balls);
-                if (gameState.balls === 4) {
-                    setTimeout(() => {
-                        if (confirm('四壞保送，是否要記錄？')) {
-                            document.getElementById('batter-result').value = '四壞保送';
-                            recordBatterResult();
-                            resetCount();
-                        }
-                    }, 100);
-                }
             }
         }
 
         function updateCountDisplay(type, count) {
-            const maxCount = type === 'strike' ? 3 : 4;
+            const maxCount = type === 'strike' ? 2 : 3;
             for (let i = 1; i <= maxCount; i++) {
                 const circle = document.getElementById(`${type}${i}`);
                 circle.className = 'count-circle' + (i <= count ? ' active' : '');
@@ -1050,28 +1164,61 @@
         function resetCount() {
             gameState.strikes = 1;
             gameState.balls = 1;
-            updateCountDisplay('strike', 1);
-            updateCountDisplay('ball', 1);
+            updateCountDisplay('strike', gameState.strikes);
+            updateCountDisplay('ball', gameState.balls);
         }
 
         // 初始化頁面
         function initializeGame() {
+            // 先詢問是先攻還是後攻
+            const choice = confirm('請選擇您的隊伍順序：\n確定 = 先攻\n取消 = 後攻');
+            gameState.isBattingFirst = choice;
+            
+            // 設置先攻/後攻標示
+            document.getElementById('home-batting-order').textContent = choice ? '（先攻）' : '（後攻）';
+            document.getElementById('away-batting-order').textContent = choice ? '（後攻）' : '（先攻）';
+            
+            // 更新 gameState 中的隊名
+            gameState.homeTeamName = document.getElementById('home-team-name').value;
+            gameState.awayTeamName = document.getElementById('away-team-name').value;
+            
+            // 設置初始按鈕狀態
+            updateRecordButtonState();
+            
             initializeBattingOrder();
             updateCountDisplay('strike', 1);
             updateCountDisplay('ball', 1);
             updateStatsTable();
         }
 
-        // 修改初始化調用
-        window.onload = function() {
-            initializeGame();
-        };
+        // 新增：更新記錄按鈕狀態的函數
+        function updateRecordButtonState() {
+            const recordButton = document.querySelector('.result-controls button');
+            const canRecord = gameState.isBattingFirst === gameState.isTop;
+            recordButton.disabled = !canRecord;
+            recordButton.style.opacity = canRecord ? '1' : '0.5';
+            
+            // 更新出局數控制按鈕的顯示
+            updateOutsDisplay();
+            
+            // 更新提示文字
+            const inningText = gameState.isTop ? '上' : '下';
+            const battingStatus = canRecord ? '我方進攻' : '對方進攻';
+            document.querySelector('.inning-display').setAttribute('data-status', 
+                `${gameState.inning}局${inningText} - ${battingStatus}`);
+        }
 
         function exportToCSV() {
             let csvContent = '\uFEFF';  // BOM for Excel UTF-8
             
+            // 獲取完整的隊名（包含先攻/後攻標示）
+            const homeTeamName = document.getElementById('home-team-name').value + 
+                document.getElementById('home-batting-order').textContent;
+            const awayTeamName = document.getElementById('away-team-name').value + 
+                document.getElementById('away-batting-order').textContent;
+            
             // 比賽基本資訊和第一個表格
-            csvContent += `比賽結果：${gameState.homeTeamName} ${gameState.homeScore} : ${gameState.awayScore} ${gameState.awayTeamName}\n\n`;
+            csvContent += `比賽結果：${homeTeamName} ${gameState.homeScore} : ${gameState.awayScore} ${awayTeamName}\n\n`;
             csvContent += '選手,打席,安打,打點,打擊率\n';
             
             // 第一個表格資料（簡易統計）
@@ -1119,7 +1266,7 @@
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
             
-            const filename = `比賽統計_${year}${month}${day}_${gameState.homeTeamName} vs ${gameState.awayTeamName}.csv`;
+            const filename = `比賽統計_${year}${month}${day}_${homeTeamName} vs ${awayTeamName}.csv`;
 
             // 建立並觸發下載
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -1129,6 +1276,31 @@
             link.click();
             window.URL.revokeObjectURL(link.href);
         }
+
+        function handleOutsChange(change) {
+            // 只在非我方進攻時可以手動控制
+            if (gameState.isBattingFirst === gameState.isTop) {
+                return;
+            }
+            
+            const newOuts = gameState.outs + change;
+            if (newOuts >= 0 && newOuts <= 3) {
+                gameState.outs = newOuts;
+                updateOutsDisplay();
+                
+                // 如果達到三個出局，自動換局
+                if (gameState.outs === 3) {
+                    setTimeout(() => {
+                        changeInning();
+                    }, 500);
+                }
+            }
+        }
+
+        // 修改初始化調用
+        window.onload = function() {
+            initializeGame();
+        };
     </script>
 </body>
-</html> 
+</html>
