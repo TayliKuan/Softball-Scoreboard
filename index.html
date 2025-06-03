@@ -209,10 +209,8 @@
         }
 
         .batter-row {
-            display: grid;
-            grid-template-columns: 25px 50px 150px 120px 60px 150px;
-            gap: 10px;
-            align-items: center;
+            display: flex;
+            flex-direction: column;
             margin-bottom: 5px;
             padding: 5px;
             background-color: white;
@@ -220,6 +218,20 @@
             border-radius: 3px;
             cursor: move;
             color: black;
+        }
+
+        .batter-row-main {
+            display: grid;
+            grid-template-columns: 40px 60px 150px 120px 80px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .batter-row-today {
+            margin-top: 5px;
+            padding-left: 40px;
+            color: #666;
+            font-size: 14px;
         }
 
         .batter-row.dragging {
@@ -401,20 +413,15 @@
             }
 
             .batter-row-main {
-                display: grid;
                 grid-template-columns: 20px 45px 120px 100px 50px;
                 gap: 5px;
-                align-items: center;
             }
 
             .batter-row-today {
                 padding-left: 25px;
-                font-size: 14px;
-                color: #666;
             }
 
             .batter-row[style*="font-weight: bold"] {
-                display: grid;
                 grid-template-columns: 20px 45px 120px 100px 50px;
                 gap: 5px;
             }
@@ -570,6 +577,56 @@
             margin-top: 5px;
             text-align: center;
         }
+
+        /* 表頭樣式 */
+        .batter-row[style*="font-weight: bold"] {
+            display: grid;
+            grid-template-columns: 40px 60px 150px 120px 80px;
+            gap: 10px;
+            align-items: center;
+            cursor: default;
+            margin-bottom: 10px;
+            background-color: #f5f5f5;
+            font-weight: bold;
+            padding: 10px 5px;
+        }
+
+        @media (max-width: 768px) {
+            .batter-row-main {
+                grid-template-columns: 20px 45px 120px 100px 50px;
+                gap: 5px;
+            }
+
+            .batter-row[style*="font-weight: bold"] {
+                grid-template-columns: 20px 45px 120px 100px 50px;
+                gap: 5px;
+                padding: 8px 5px;
+                font-size: 14px;
+            }
+
+            .batter-row-today {
+                padding-left: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .batter-row-main {
+                grid-template-columns: 20px 40px 100px 80px 45px;
+                gap: 3px;
+            }
+
+            .batter-row[style*="font-weight: bold"] {
+                grid-template-columns: 20px 40px 100px 80px 45px;
+                gap: 3px;
+                padding: 6px 3px;
+                font-size: 12px;
+            }
+
+            .batter-row-today {
+                padding-left: 20px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -667,7 +724,6 @@
                         <div>選手名稱</div>
                         <div>守備位置</div>
                         <div>目前</div>
-                        <div>今日</div>
                     </div>
                     <div id="batting-order-list"></div>
                 </div>
